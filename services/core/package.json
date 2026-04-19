@@ -9,6 +9,7 @@
     "run-now": "node src/main.js --run-now"
   },
   "dependencies": {
+    "googleapis": "^144.0.0",
     "imapflow": "^1.0.169",
     "js-yaml": "^4.1.0",
     "node-cron": "^3.0.3"

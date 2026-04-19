@@ -204,6 +204,34 @@ With **7-day, 3-day, and 1-day reminders** so you never miss a payment.
 2. Generate a password named `synccc`
 3. Paste it into `config.yaml` under `calendar.icaldav.password`
 
+### Google Calendar
+
+**Step 1 — Create OAuth2 credentials**
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/) → Create a new project
+2. Enable the **Google Calendar API** (APIs & Services → Enable APIs → search "Google Calendar API")
+3. Go to APIs & Services → Credentials → Create Credentials → **OAuth 2.0 Client ID**
+4. Application type: **Desktop app** — name it `synccc`
+5. Download the JSON file and save it as `google_credentials.json` in the synccc root folder
+
+**Step 2 — Update config.yaml**
+
+```yaml
+calendar:
+  provider: google
+  google:
+    credentials_file: "./google_credentials.json"
+    calendar_id: "primary"     # or a specific calendar ID
+```
+
+**Step 3 — One-time auth (run once only)**
+
+```bash
+docker compose run --rm core node src/auth-google.js
+```
+
+This prints a URL — open it in your browser, sign in, grant access, paste the code back. Token is saved to `./data/google_token.json` and synccc runs headlessly from that point on. No browser needed again.
+
 ### Paperless-NGX (optional)
 
 For long-term storage and searchable statements:
@@ -267,7 +295,7 @@ Add them to `config.yaml` and restart: `docker compose restart core`. New cards 
 
 ## Roadmap
 
-- [ ] Google Calendar support
+- [x] Google Calendar support
 - [ ] Outlook / non-Gmail IMAP
 - [ ] Push notifications (ntfy.sh / Pushover)
 - [ ] Web dashboard for spend overview
@@ -278,9 +306,9 @@ Add them to `config.yaml` and restart: `docker compose restart core`. New cards 
 
 PRs welcome. Best places to start:
 
-- **Google Calendar** — stub at `services/core/src/calendar/google.js`
 - **Non-Gmail IMAP** — extend `services/core/src/imap.js`
 - **New AI providers** — add a case in `services/core/src/ai.js`
+- **Push notifications** — add ntfy.sh / Pushover support in `services/core/src/pipeline.js`
 
 Please open an issue before starting a large change.
 

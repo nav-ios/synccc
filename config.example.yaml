@@ -102,5 +102,8 @@ calendar:
 
   google:
     credentials_file: "./google_credentials.json"
-    calendar_id: "primary"      # or a specific calendar ID
-    # Setup: https://developers.google.com/calendar/api/quickstart/nodejs
+    # Download from: Google Cloud Console → APIs & Services → Credentials → OAuth 2.0 Client ID (Desktop app)
+    calendar_id: "primary"      # "primary" or a specific calendar ID from calendar.google.com settings
+    # One-time setup after filling credentials_file:
+    #   docker compose run --rm core node src/auth-google.js
+    # This opens a browser URL, you paste the auth code, token is saved. Done forever.

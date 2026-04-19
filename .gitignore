@@ -1,6 +1,7 @@
 config.yaml
 data/
 google_credentials.json
+google_token.json
 node_modules/
 *.log
 .env
