@@ -5,7 +5,7 @@
 <br/>
 <br/>
 
-**Automate every credit card statement. Zero manual work.**
+**Your credit card due dates — always in your calendar. Always with full context.**
 
 *Fetches PDFs from Gmail → Decrypts → Parses with AI → Creates rich calendar events with full transaction breakdowns*
 
@@ -19,9 +19,13 @@
 
 ## What is this?
 
-If you have multiple credit cards across multiple email accounts, you know the pain — opening PDFs, checking due dates, missing payments.
+Built for a specific personal frustration: 14 credit cards across 4 Gmail accounts, each with password-protected PDFs, each with a different due date. The only way to know what you owe — and when — was to open each email, enter the PDF password, scroll through the statement.
 
-**synccc** automates the entire pipeline:
+**synccc** eliminates that entirely. It runs daily, silently, and by the time you wake up there's a calendar event on each card's due date — with the total amount due right in the title, and every single transaction in the event body if you want to dig in.
+
+No app to open. No login. No third-party service with your data. Just your native calendar — which syncs to your phone, your Mac, your watch, and sits as a widget on your home screen.
+
+The pipeline it runs:
 
 1. **Fetches** CC statement PDFs from any number of Gmail accounts via IMAP
 2. **Decrypts** password-protected PDFs (qpdf + pikepdf)
@@ -30,7 +34,9 @@ If you have multiple credit cards across multiple email accounts, you know the p
 5. **Creates calendar events** on the due date with the full expense breakdown in the description — 7d/3d/1d reminders included
 6. Optionally **uploads to Paperless-NGX** for long-term document storage
 
-> Add it once. Never open a CC PDF manually again.
+> This is not a product. It's a self-hosted tool I built for my own use. If your situation looks like mine, it'll work for you too.
+
+**Who this is for:** people with several credit cards across different banks and email accounts, who want due dates tracked automatically in their native calendar — without relying on any third-party app, YNAB, or bank aggregator.
 
 ---
 
@@ -50,11 +56,13 @@ If you have multiple credit cards across multiple email accounts, you know the p
 
 ## Features
 
+- **Native calendar, first-party** — events land in iCloud or Google Calendar, which syncs to iPhone, Mac, and Apple Watch automatically. Add it as a home screen widget and your due dates are always visible
+- **Everything in the event title** — card name + amount due, so you never have to open anything to know what's coming
+- **Full statement in the event body** — open the event and you get billing cycle, category breakdown, every transaction. No app, no login, no PDF
 - **Any number of Gmail accounts** — add as many as you need
 - **Any number of cards** — map each card to a Gmail account with sender/subject filters
 - **Two cards from the same sender** — use `filter_subject` + `filter_subject_exclude` to distinguish them
 - **AI provider of your choice** — Gemini, Anthropic (Claude), or OpenAI — swap via one config line
-- **Calendar of your choice** — iCloud (CalDAV) today, Google Calendar coming soon
 - **Storage of your choice** — Paperless-NGX or local folder + Apache Tika for OCR
 - **Rich calendar events** — due date, billing cycle, category spend breakdown, every transaction listed
 - **Content hash dedup** — same PDF from two email addresses only processed once
