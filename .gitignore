@@ -1,0 +1,6 @@
+config.yaml
+data/
+google_credentials.json
+node_modules/
+*.log
+.env

@@ -1,0 +1,34 @@
+services:
+  # PDF decryptor — handles password-protected PDFs via qpdf + pikepdf
+  decryptor:
+    build: ./services/decryptor
+    container_name: synccc-decryptor
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5680:5680"
+
+  # Apache Tika — OCR engine (used when storage.provider = local)
+  tika:
+    image: apache/tika:latest
+    container_name: synccc-tika
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:9998:9998"
+
+  # Core orchestrator — IMAP fetch, AI parse, calendar events
+  core:
+    build: ./services/core
+    container_name: synccc-core
+    restart: unless-stopped
+    depends_on:
+      - decryptor
+      - tika
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+      - ./data:/app/data
+      - ./google_credentials.json:/app/google_credentials.json:ro
+    environment:
+      - DECRYPTOR_URL=http://decryptor:5680
+      - TIKA_URL=http://tika:9998
+      - NODE_ENV=production
+      - TZ=Asia/Kolkata        # change to your timezone

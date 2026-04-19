@@ -1,0 +1,16 @@
+{
+  "name": "synccc-core",
+  "version": "1.0.0",
+  "description": "Credit card statement automation — IMAP fetch, AI parse, calendar events",
+  "main": "src/main.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/main.js",
+    "run-now": "node src/main.js --run-now"
+  },
+  "dependencies": {
+    "imapflow": "^1.0.169",
+    "js-yaml": "^4.1.0",
+    "node-cron": "^3.0.3"
+  }
+}

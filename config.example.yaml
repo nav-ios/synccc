@@ -1,0 +1,106 @@
+# synccc - config.example.yaml
+# Copy this to config.yaml and fill in your values.
+# Never commit config.yaml to git (it's in .gitignore).
+
+# ─── Schedule ────────────────────────────────────────────────────────────────
+schedule:
+  cron: "0 8 * * *"           # daily at 8 AM — standard cron expression
+
+# ─── Gmail Accounts ──────────────────────────────────────────────────────────
+# Add as many Gmail accounts as you need.
+# App passwords: https://myaccount.google.com/apppasswords (2FA must be on)
+accounts:
+  - id: 1
+    email: you@gmail.com
+    app_password: "xxxx xxxx xxxx xxxx"
+
+  - id: 2
+    email: other@gmail.com
+    app_password: "xxxx xxxx xxxx xxxx"
+
+# ─── Credit Cards ────────────────────────────────────────────────────────────
+# Each card maps to a Gmail account.
+# filter_from: partial match on sender email (e.g. "hdfcbank" matches "alerts@hdfcbank.com")
+# filter_subject: partial match on email subject (optional)
+# filter_subject_exclude: skip emails whose subject contains this (optional)
+# passwords: list of PDF passwords to try in order (leave empty [] if not password-protected)
+# since: only fetch emails after this date (YYYY-MM-DD)
+cards:
+  - name: "HDFC Swiggy"
+    account_id: 1
+    filter_from: "hdfcbank"
+    filter_subject: "Swiggy"
+    since: "2024-01-01"
+    passwords:
+      - "YOUR_PDF_PASSWORD"
+
+  - name: "ICICI Amazon Pay"
+    account_id: 2
+    filter_from: "credit_cards@icicibank.com"
+    filter_subject: "Amazon Pay ICICI"
+    since: "2024-01-01"
+    passwords: []
+
+  - name: "SBI Card"
+    account_id: 1
+    filter_from: "sbicard"
+    filter_subject: "SBI Card Monthly Statement"
+    since: "2024-01-01"
+    passwords:
+      - "PASS1"
+      - "PASS2"
+
+  # Example: two cards from same sender — use filter_subject to distinguish
+  - name: "ICICI Coral"
+    account_id: 2
+    filter_from: "credit_cards@icicibank.com"
+    filter_subject: "ICICI Bank Credit Card Statement"
+    filter_subject_exclude: "Amazon Pay"   # skip Amazon Pay statements
+    since: "2024-01-01"
+    passwords: []
+
+# ─── AI Provider ─────────────────────────────────────────────────────────────
+# Used for: parsing statements (due date, amount, transactions, category summary)
+# and writing calendar event descriptions.
+# Pick one provider and fill in its key. Others can be left blank.
+ai:
+  provider: gemini              # gemini | anthropic | openai
+
+  gemini_api_key: ""            # https://aistudio.google.com/app/apikey
+  gemini_model: "gemini-2.0-flash"  # gemini-2.5-flash | gemini-2.0-flash | gemini-2.0-flash-lite
+
+  anthropic_api_key: ""         # https://console.anthropic.com/
+  anthropic_model: "claude-3-5-haiku-20241022"  # any Claude model
+
+  openai_api_key: ""            # https://platform.openai.com/api-keys
+  openai_model: "gpt-4o-mini"  # gpt-4o | gpt-4o-mini
+
+# ─── Storage ─────────────────────────────────────────────────────────────────
+# paperless: uploads PDFs to your Paperless-NGX instance for OCR + storage
+# local: saves decrypted PDFs to ./data/statements/ and uses Apache Tika for OCR
+storage:
+  provider: local               # paperless | local
+
+  paperless:
+    url: "http://localhost:8000"
+    token: ""                   # Settings → API → Generate token
+
+  local:
+    path: "./data/statements"   # where to save PDFs
+
+# ─── Calendar ────────────────────────────────────────────────────────────────
+# Events are created with the payment due date and a full transaction breakdown
+# in the description. 7-day, 3-day, and 1-day reminders are added automatically.
+calendar:
+  provider: icaldav             # icaldav | google | none
+
+  icaldav:
+    user: "you@icloud.com"
+    password: ""                # iCloud app-specific password (not your Apple ID password)
+    # Generate at: https://appleid.apple.com → Sign-In and Security → App-Specific Passwords
+    calendar_name: "Credit Cards"   # will be created if it doesn't exist
+
+  google:
+    credentials_file: "./google_credentials.json"
+    calendar_id: "primary"      # or a specific calendar ID
+    # Setup: https://developers.google.com/calendar/api/quickstart/nodejs
