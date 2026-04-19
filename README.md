@@ -1,6 +1,9 @@
 <div align="center">
 
-# synccc
+<img src="assets/logo.png" width="360" alt="synccc" />
+
+<br/>
+<br/>
 
 **Automate every credit card statement. Zero manual work.**
 
