@@ -3,6 +3,15 @@ const { ImapFlow } = require('imapflow');
 
 const IGNORED_FILENAMES = ['most important terms', 'terms and conditions', 'mitc'];
 
+function effectiveSinceDate(since) {
+  // Use a rolling 45-day window so daily runs don't fetch years of email.
+  // But never go earlier than the card's configured `since` date.
+  const rolling = new Date();
+  rolling.setDate(rolling.getDate() - 45);
+  const floor = since ? new Date(since) : new Date('2024-01-01');
+  return rolling > floor ? rolling : floor;
+}
+
 async function fetchAttachments(account, card) {
   const { email, app_password } = account;
   const { filter_from, filter_subject, filter_subject_exclude, since } = card;
@@ -21,7 +30,7 @@ async function fetchAttachments(account, card) {
     await client.connect();
     const lock = await client.getMailboxLock('INBOX');
     try {
-      const sinceDate = since ? new Date(since) : new Date('2024-01-01');
+      const sinceDate = effectiveSinceDate(since);
       const criteria = { from: filter_from, since: sinceDate };
       if (filter_subject) criteria.subject = filter_subject;
 

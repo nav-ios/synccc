@@ -4,16 +4,28 @@ services:
     build: ./services/decryptor
     container_name: synccc-decryptor
     restart: unless-stopped
-    ports:
-      - "127.0.0.1:5680:5680"
+    networks:
+      - synccc-internal
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5680')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   # Apache Tika — OCR engine (used when storage.provider = local)
   tika:
     image: apache/tika:latest
     container_name: synccc-tika
     restart: unless-stopped
-    ports:
-      - "127.0.0.1:9998:9998"
+    networks:
+      - synccc-internal
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:9998/tika"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
 
   # Core orchestrator — IMAP fetch, AI parse, calendar events
   core:
@@ -21,8 +33,12 @@ services:
     container_name: synccc-core
     restart: unless-stopped
     depends_on:
-      - decryptor
-      - tika
+      decryptor:
+        condition: service_healthy
+      tika:
+        condition: service_healthy
+    networks:
+      - synccc-internal
     volumes:
       - ./config.yaml:/app/config.yaml:ro
       - ./data:/app/data
@@ -31,4 +47,8 @@ services:
       - DECRYPTOR_URL=http://decryptor:5680
       - TIKA_URL=http://tika:9998
       - NODE_ENV=production
-      - TZ=Asia/Kolkata        # change to your timezone
+      - TZ=Asia/Kolkata          # change to your timezone
+
+networks:
+  synccc-internal:
+    driver: bridge
