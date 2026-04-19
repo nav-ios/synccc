@@ -33,7 +33,15 @@ If you have multiple credit cards across multiple email accounts, you know the p
 
 ## Demo
 
-<!-- Add your screenshots / screen recording here -->
+<div align="center">
+
+<img src="assets/synccc1.png" width="100%" alt="synccc dashboard" />
+
+<img src="assets/synccc2.png" width="100%" alt="synccc card view" />
+
+<img src="assets/synccc3.png" width="100%" alt="iCloud Calendar with full transaction breakdown" />
+
+</div>
 
 ---
 
